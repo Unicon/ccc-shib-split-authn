@@ -1,0 +1,18 @@
+dn: cn=admin,dc=staff,dc=ccc,dc=local
+objectClass: simpleSecurityObject
+objectClass: organizationalRole
+cn: admin
+userPassword: password
+description: LDAP administrator
+
+dn: uid=staff1,ou=People,dc=staff,dc=ccc,dc=local
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+objectClass: inetOrgPerson
+givenName: Sta
+uid: staff1
+sn: ff
+cn: Sta ff
+mail: staff1@ccc.local
+userPassword: password
