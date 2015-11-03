@@ -7,7 +7,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
                         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
-
+<!--
     <bean id="shibboleth.StaffAuthSourceActivationCondition"
           class="net.shibboleth.idp.profile.logic.ScriptedPredicate"
           factory-method="inlineScript">
@@ -23,19 +23,14 @@
             </value>
         </constructor-arg>
     </bean>
+
+    -->
+    <bean id="shibboleth.EmployeeAuthSourceActivationCondition"
+          class="net.unicon.idp.profile.logic.RealmSelctorPredicate">
+        <constructor-arg index="0" value="@employee" />
+    </bean>
     <bean id="shibboleth.StudentAuthSourceActivationCondition"
-          class="net.shibboleth.idp.profile.logic.ScriptedPredicate"
-          factory-method="inlineScript">
-        <constructor-arg>
-            <value>
-                <![CDATA[
-                   value = true;
-                   //if (null == profileContext.getSubcontext("net.shibboleth.idp.profile.context.RelyingPartyContext")) {
-                   //  value = false;
-                   //}
-                   value;
-	            ]]>
-            </value>
-        </constructor-arg>
+          class="net.unicon.idp.profile.logic.RealmSelctorPredicate">
+        <constructor-arg index="0" value="@student" />
     </bean>
 </beans>

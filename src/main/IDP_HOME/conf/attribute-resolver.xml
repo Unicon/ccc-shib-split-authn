@@ -278,7 +278,7 @@
      -->
 
     <resolver:DataConnector id="myLDAP" xsi:type="dc:LDAPDirectory"
-        activationConditionRef="shibboleth.StaffAuthSourceActivationCondition"
+        activationConditionRef="shibboleth.EmployeeAuthSourceActivationCondition"
         ldapURL="%{idp.attribute.resolver.LDAP.ldapURL}"
         baseDN="%{idp.attribute.resolver.LDAP.baseDN}" 
         principal="%{idp.attribute.resolver.LDAP.bindDN}"
