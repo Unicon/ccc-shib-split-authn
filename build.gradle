@@ -25,8 +25,13 @@ task copyDocker(type: Copy) {
     into 'build/docker-compose/'
 }
 
+task overlayDockerWithWorkingConfig(type: Copy) {
+    from 'src/main/IDP_HOME/'
+    into 'build/docker-compose/idp/shibboleth-idp/'
+}
+
 task buildContainers(type:Exec) {
-    dependsOn copyDocker
+    dependsOn copyDocker, overlayDockerWithWorkingConfig
 
     doFirst {
         logger.lifecycle("Building the initial images may take a long time. Have plenty of bandwidth.")
