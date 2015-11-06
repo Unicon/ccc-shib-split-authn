@@ -19,7 +19,7 @@
     <bean class="net.shibboleth.idp.profile.impl.ProfileActionBeanPostProcessor" />
     <bean class="net.shibboleth.ext.spring.config.IdentifiableBeanPostProcessor" />
 
-    <import resource="../../../conf/authn/password-authn-config.xml" />
+    <import resource="password-authn-config.xml" />
 
     <bean id="ExtractUsernamePasswordFromBasicAuth"
           class="net.shibboleth.idp.authn.impl.ExtractUsernamePasswordFromBasicAuth" scope="prototype"
@@ -74,11 +74,18 @@
     <bean id="shibboleth.KeystoreResourceCredentialConfig"
           class="net.shibboleth.idp.authn.impl.KeystoreResourceCredentialConfig" abstract="true" />
 
-    <bean id="ValidateUsernamePasswordAgainstLDAP"
+    <bean id="ValidateUsernamePasswordAgainstStaffLDAP"
           class="net.shibboleth.idp.authn.impl.ValidateUsernamePasswordAgainstLDAP" scope="prototype"
-          p:authenticator-ref="shibboleth.authn.LDAP.authenticator"
+          p:authenticator-ref="shibboleth.authn.EmployeeLDAP.authenticator"
           p:classifiedMessages-ref="shibboleth.authn.Password.ClassifiedMessageMap"
           p:resultCachingPredicate="#{getObject('shibboleth.authn.Password.resultCachingPredicate')}"
-          p:returnAttributes-ref="shibboleth.authn.LDAP.returnAttributes" />
+          p:returnAttributes-ref="shibboleth.authn.EmployeeLDAP.returnAttributes" />
+
+    <bean id="ValidateUsernamePasswordAgainstStudentLDAP"
+          class="net.shibboleth.idp.authn.impl.ValidateUsernamePasswordAgainstLDAP" scope="prototype"
+          p:authenticator-ref="shibboleth.authn.StudentLDAP.authenticator"
+          p:classifiedMessages-ref="shibboleth.authn.Password.ClassifiedMessageMap"
+          p:resultCachingPredicate="#{getObject('shibboleth.authn.Password.resultCachingPredicate')}"
+          p:returnAttributes-ref="shibboleth.authn.StudentLDAP.returnAttributes" />
 
 </beans>

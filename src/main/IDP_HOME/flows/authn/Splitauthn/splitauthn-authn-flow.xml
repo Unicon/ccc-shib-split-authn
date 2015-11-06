@@ -6,6 +6,10 @@
     <!--
     This is a login flow for basic-auth or form-based password authentication. The back-end step is named
     "ValidateUsernamePassword" and can be supplied by different back-end implementation files.
+
+    Unicon Implementation Note:
+    This file is the clone of system's password-authn-flow.xml. It has been modified to examine the realm/role attribute
+    on the login page, then route to the appropriate handler.
     -->
 
     <action-state id="ExtractUsernamePasswordFromBasicAuth">
@@ -44,16 +48,40 @@
         <transition on="proceed" to="ExtractUsernamePasswordFromFormRequest" />
     </view-state>
 
+
     <action-state id="ExtractUsernamePasswordFromFormRequest">
         <evaluate expression="ExtractUsernamePasswordFromFormRequest" />
         <evaluate expression="'proceed'" />
 
         <!-- Let the validate action handle any problems later. -->
-        <transition to="ValidateUsernamePassword" />
+        <transition to="ExtractAuthnProvider" />
     </action-state>
 
-    <action-state id="ValidateUsernamePassword" parent="authn/conditions#ValidateUsernamePassword">
-        <evaluate expression="ValidateUsernamePassword" />
+    <action-state id="ExtractAuthnProvider">
+        <set type="java.lang.String" name="flowScope.realm" value="requestParameters.realm" />
+        <transition to="RouteToProvider" />
+    </action-state>
+
+    <decision-state id="RouteToProvider">
+        <if test="flowScope.realm eq 'employee'"
+            then="ValidateUsernamePasswordAgainstStaffLDAP"
+            else="ValidateUsernamePasswordAgainstStudentLDAP"/>
+    </decision-state>
+
+    <action-state id="ValidateUsernamePasswordAgainstStaffLDAP" parent="authn/conditions#ValidateUsernamePassword">
+        <evaluate expression="ValidateUsernamePasswordAgainstStaffLDAP" />
+        <evaluate expression="'proceed'" />
+
+        <transition on="proceed" to="proceed" />
+
+        <!-- Fall through to a different flow if login fails on a passive or non-browser request. -->
+        <transition on="#{ opensamlProfileRequestContext.getSubcontext(T(net.shibboleth.idp.authn.context.AuthenticationContext)).isPassive() || !opensamlProfileRequestContext.isBrowserProfile() }" to="ReselectFlow" />
+
+        <!-- Other event transitions are determined by deployer in /flows/authn/conditions/conditions-flow.xml -->
+    </action-state>
+
+    <action-state id="ValidateUsernamePasswordAgainstStudentLDAP" parent="authn/conditions#ValidateUsernamePassword">
+        <evaluate expression="ValidateUsernamePasswordAgainstStudentLDAP" />
         <evaluate expression="'proceed'" />
 
         <transition on="proceed" to="proceed" />
