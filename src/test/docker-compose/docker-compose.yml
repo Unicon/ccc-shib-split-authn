@@ -17,6 +17,8 @@ idp:
   links:
    - ldap-staff:ldap-staff
    - ldap-students:ldap-students
+  ports:
+   - "5005:5005"
 
 ldap-staff:
   build: ./ldap-staff/
