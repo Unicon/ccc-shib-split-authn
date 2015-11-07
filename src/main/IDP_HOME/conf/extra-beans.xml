@@ -33,4 +33,5 @@
           class="net.unicon.idp.profile.logic.RealmSelctorPredicate">
         <constructor-arg index="0" value="@student" />
     </bean>
+
 </beans>
