@@ -290,22 +290,4 @@
     -->
     </resolver:DataConnector>
 
-    <resolver:DataConnector id="studentLDAP" xsi:type="dc:LDAPDirectory"
-                            ldapURL="%{idp.attribute.resolver.LDAP2.ldapURL}"
-                            baseDN="%{idp.attribute.resolver.LDAP2.baseDN}"
-                            principal="%{idp.attribute.resolver.LDAP2.bindDN}"
-                            principalCredential="%{idp.attribute.resolver.LDAP2.bindDNCredential}"
-                            useStartTLS="%{idp.attribute.resolver.LDAP2.useStartTLS:true}">
-        <dc:FilterTemplate>
-            <![CDATA[
-                %{idp.attribute.resolver.LDAP2.searchFilter}
-            ]]>
-        </dc:FilterTemplate>
-        <!--
-        <dc:StartTLSTrustCredential id="LDAPtoIdPCredential" xsi:type="sec:X509ResourceBacked">
-            <sec:Certificate>%{idp.attribute.resolver.LDAP.trustCertificates}</sec:Certificate>
-        </dc:StartTLSTrustCredential>
-    -->
-    </resolver:DataConnector>
-
 </resolver:AttributeResolver>
