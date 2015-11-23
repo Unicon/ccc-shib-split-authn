@@ -4,7 +4,6 @@
 
 export JAVA_HOME=/opt/jre-home
 export PATH=$PATH:$JAVA_HOME/bin
-export JETTY_CONF=none
 
 if [ -e "/opt/shibboleth-idp/ext-conf/idp-secrets.properties" ]; then
   export keyStorePassword=`awk '/idp.sealer.storePassword/{print $NF}' /opt/shibboleth-idp/ext-conf/idp-secrets.properties`
