@@ -35,7 +35,7 @@
 
     <alias name="%{idp.authn.EmployeeLDAP.sslConfig:employeeCertificateTrust}" alias="employeeSslConfig" />
 
-    <bean id="employeeJvmTrust" class="org.ldaptive.ssl.sslConfig" />
+    <bean id="employeeJvmTrust" class="org.ldaptive.ssl.SslConfig" />
     <bean id="employeeCertificateTrust" class="org.ldaptive.ssl.SslConfig">
         <property name="credentialConfig">
             <bean parent="shibboleth.X509ResourceCredentialConfig" p:trustCertificates="%{idp.authn.EmployeeLDAP.trustCertificates}" />
