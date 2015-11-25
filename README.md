@@ -4,7 +4,7 @@ This project demonstrates how to modify the Shibboleth IdP v3 to support unique 
 ## Project layout
 IdP configuration files that are either added or changed to utilize the split authn support are located in `src/main/IDP_HOME`. The directory structure generally mirrors that of an installed IdP.
 
-This projet does include a few Java source files. Those can be found in `src/main/java`.
+This project includes a few Java source files. Those can be found in `src/main/java` and in `src/test/java`.
 
 This project utilizes Docker for testing (see `Testing` below). The test env configuration is in `src/test/docker-compose`.
 

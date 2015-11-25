@@ -8,7 +8,6 @@ import net.shibboleth.idp.authn.context.SubjectCanonicalizationContext;
 import net.shibboleth.idp.authn.principal.UsernamePrincipal;
 import org.opensaml.profile.action.ActionSupport;
 import org.opensaml.profile.context.ProfileRequestContext;
-import org.springframework.webflow.context.ExternalContext;
 import org.springframework.webflow.execution.RequestContext;
 
 import javax.annotation.Nonnull;
@@ -16,24 +15,39 @@ import javax.annotation.Nullable;
 import java.util.Set;
 
 /**
- * Created by jgasper on 11/6/15.
+ *
+ * An action that operates on a {@link SubjectCanonicalizationContext} child of the current
+ * {@link ProfileRequestContext}, and transforms the input {@link javax.security.auth.Subject}
+ * into a principal name by searching for one and only one {@link UsernamePrincipal} custom principal.
+ *
+ * @event {@link org.opensaml.profile.action.EventIds#PROCEED_EVENT_ID}
+ * @event {@link AuthnEventIds#INVALID_SUBJECT}
+ * @pre <pre>ProfileRequestContext.getSubcontext(SubjectCanonicalizationContext.class, false) != null</pre>
+ * @post <pre>SubjectCanonicalizationContext.getPrincipalName() != null
+ *  || SubjectCanonicalizationContext.getException() != null</pre>
  */
 public class SplitauthnSubjectCanonicalization extends net.shibboleth.idp.authn.AbstractSubjectCanonicalizationAction {
 
+    /** Supplies logic for pre-execute test. */
+    @Nonnull private final ActivationCondition embeddedPredicate;
+
     /** The custom Principal to operate on. */
-    @Nullable
-    private UsernamePrincipal usernamePrincipal;
+    @Nullable private UsernamePrincipal usernamePrincipal;
 
     /** Constructor. */
     public SplitauthnSubjectCanonicalization() {
-    //    embeddedPredicate = new ActivationCondition();
+        embeddedPredicate = new ActivationCondition();
     }
 
     @Override
     protected boolean doPreExecute(@Nonnull final ProfileRequestContext profileRequestContext, @Nonnull final SubjectCanonicalizationContext c14nContext) {
-        usernamePrincipal = c14nContext.getSubject().getPrincipals(UsernamePrincipal.class).iterator().next();
-        return super.doPreExecute(profileRequestContext, c14nContext);
-       }
+        if (embeddedPredicate.apply(profileRequestContext, c14nContext, true)) {
+            usernamePrincipal = c14nContext.getSubject().getPrincipals(UsernamePrincipal.class).iterator().next();
+            return super.doPreExecute(profileRequestContext, c14nContext);
+        }
+
+        return false;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -67,7 +81,7 @@ public class SplitauthnSubjectCanonicalization extends net.shibboleth.idp.authn.
 
         /**
          * Helper method that runs either as part of the {@link Predicate} or directly from
-         * the {@link SimpleSubjectCanonicalization#doPreExecute(ProfileRequestContext, SubjectCanonicalizationContext)}
+         * the {@link SplitauthnSubjectCanonicalization#doPreExecute(ProfileRequestContext, SubjectCanonicalizationContext)}
          * method above.
          *
          * @param profileRequestContext the current profile request context

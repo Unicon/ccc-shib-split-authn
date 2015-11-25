@@ -1,6 +1,5 @@
 apply plugin: 'java'
 
-project
 repositories {
     // Use 'jcenter' for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
@@ -12,9 +11,9 @@ repositories {
 
 
 dependencies {
-    compile 'org.opensaml:opensaml-profile-api:3.1.1'
-    compile 'net.shibboleth.idp:idp-authn-api:3.1.2'
-    compile 'net.shibboleth.idp:idp-profile-api:3.1.2'
+    compile 'org.opensaml:opensaml-profile-api:3.2.0'
+    compile 'net.shibboleth.idp:idp-authn-api:3.2.0'
+    compile 'net.shibboleth.idp:idp-profile-api:3.2.0'
     compile 'org.springframework.webflow:spring-webflow:2.4.1.RELEASE'
 
 
@@ -22,9 +21,15 @@ dependencies {
     // TestNG is also supported by the Gradle Test task. Just change the
     // testCompile dependency to testCompile 'org.testng:testng:6.8.1' and add
     // 'test.useTestNG()' to your build script.
-    // testCompile 'junit:junit:4.12'
+    testCompile 'org.testng:testng:6.8.1'
+    testCompile 'org.mockito:mockito-core:1.10.8'
+    testCompile 'net.shibboleth.idp:idp-profile-api:3.2.0:tests'
+    testCompile 'javax.servlet:javax.servlet-api:3.0.1'
+    testCompile 'org.springframework:spring-test:4.2.3.RELEASE'
 }
 
+test.useTestNG()
+jar.dependsOn test
 
 task copyDocker(type: Copy) {
     from 'src/test/docker-compose/'

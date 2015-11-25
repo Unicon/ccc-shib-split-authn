@@ -3,7 +3,6 @@ package net.unicon.idp.profile.logic;
 import net.shibboleth.idp.authn.context.SubjectContext;
 import org.opensaml.profile.context.ProfileRequestContext;
 
-
 /**
  * Created by jgasper on 11/3/15.
  */
@@ -23,16 +22,9 @@ public class RealmSelctorPredicate implements com.google.common.base.Predicate<o
 
     @Override
     public boolean apply(ProfileRequestContext profileRequestContext) {
+        final SubjectContext subjectContext = profileRequestContext.getSubcontext(SubjectContext.class);
 
-        SubjectContext subjectContext;
-
-        try {
-            subjectContext = (SubjectContext) profileRequestContext.getSubcontext("net.shibboleth.idp.authn.context.SubjectContext");
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
-
-        if (subjectContext.getPrincipalName().endsWith(realm)) {
+        if (subjectContext != null && subjectContext.getPrincipalName() != null && subjectContext.getPrincipalName().endsWith(realm)) {
             return true;
         }
 
