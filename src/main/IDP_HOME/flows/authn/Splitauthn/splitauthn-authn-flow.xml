@@ -64,12 +64,12 @@
 
     <decision-state id="RouteToProvider">
         <if test="conversationScope.realm eq 'employee'"
-            then="ValidateUsernamePasswordAgainstStaffLDAP"
+            then="ValidateUsernamePasswordAgainstEmployeeLDAP"
             else="ValidateUsernamePasswordAgainstStudentLDAP"/>
     </decision-state>
 
-    <action-state id="ValidateUsernamePasswordAgainstStaffLDAP" parent="authn/conditions#ValidateUsernamePassword">
-        <evaluate expression="ValidateUsernamePasswordAgainstStaffLDAP" />
+    <action-state id="ValidateUsernamePasswordAgainstEmployeeLDAP" parent="authn/conditions#ValidateUsernamePassword">
+        <evaluate expression="ValidateUsernamePasswordAgainstEmployeeLDAP" />
         <evaluate expression="'proceed'" />
 
         <transition on="proceed" to="proceed" />

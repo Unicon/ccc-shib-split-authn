@@ -74,7 +74,7 @@
     <bean id="shibboleth.KeystoreResourceCredentialConfig"
           class="net.shibboleth.idp.authn.impl.KeystoreResourceCredentialConfig" abstract="true" />
 
-    <bean id="ValidateUsernamePasswordAgainstStaffLDAP"
+    <bean id="ValidateUsernamePasswordAgainstEmployeeLDAP"
           class="net.shibboleth.idp.authn.impl.ValidateUsernamePasswordAgainstLDAP" scope="prototype"
           p:authenticator-ref="shibboleth.authn.EmployeeLDAP.authenticator"
           p:classifiedMessages-ref="shibboleth.authn.Password.ClassifiedMessageMap"
