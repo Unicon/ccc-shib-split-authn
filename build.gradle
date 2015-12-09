@@ -31,11 +31,14 @@ dependencies {
 
 distributions {    
     main {
+        baseName = 'shib-split-authn'
         contents {
             from { 'build/dist-tmp' }
         }
     }
 }
+
+version = '1.0.0'
 
 test.useTestNG()
 jar.dependsOn test
