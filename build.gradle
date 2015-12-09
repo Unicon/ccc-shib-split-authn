@@ -1,4 +1,5 @@
 apply plugin: 'java'
+apply plugin: 'distribution'
 
 repositories {
     // Use 'jcenter' for resolving your dependencies.
@@ -26,6 +27,14 @@ dependencies {
     testCompile 'net.shibboleth.idp:idp-profile-api:3.2.0:tests'
     testCompile 'javax.servlet:javax.servlet-api:3.0.1'
     testCompile 'org.springframework:spring-test:4.2.3.RELEASE'
+}
+
+distributions {    
+    main {
+        contents {
+            from { 'build/dist-tmp' }
+        }
+    }
 }
 
 test.useTestNG()
@@ -106,6 +115,23 @@ task intTest(type: Test) {
     }
 
 }
+
+task prepDistLib(type: Copy) {
+    dependsOn jar
+
+    from ('build/libs')
+    into 'build/dist-tmp/edit-webapp/WEB-INF/libs'
+}
+
+task prepDistSrc(type: Copy) {
+    from ('src/main/IDP_HOME') 
+    from ('LICENSE')
+    into 'build/dist-tmp/'
+}
+
+distTar.dependsOn prepDistLib, prepDistSrc
+distZip.dependsOn prepDistLib, prepDistSrc
+
 
 clean {
     dependsOn removeContainers
