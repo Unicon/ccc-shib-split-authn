@@ -122,7 +122,7 @@
         $(function() {
             var defaultRealm = getCookie("defaultRealm");
 
-            if ()defaultRealm != undefined && defaultRealm != '')
+            if (defaultRealm != undefined && defaultRealm != '')
               $('#realm').val();
         });
 
