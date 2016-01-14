@@ -123,7 +123,7 @@ task prepDistLib(type: Copy) {
     dependsOn jar
 
     from ('build/libs')
-    into 'build/dist-tmp/edit-webapp/WEB-INF/libs'
+    into 'build/dist-tmp/edit-webapp/WEB-INF/lib'
 }
 
 task prepDistSrc(type: Copy) {
