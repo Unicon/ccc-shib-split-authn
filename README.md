@@ -31,6 +31,8 @@ Many of the files have matching equivalents of the default installation, so it m
 * The `general-authn.xml` file has an added flow definition that defines the flow contained in this distribution.
 * In the `service.xml`, the `shibboleth.AttributeResolverResources` has an extra definition that defines "extra" beans used by the custom flow.
 
+The label of the "role/realm" can be changed by adding a property `idp.login.realm=<label>` to the `messages/authn-messages.properties` file.
+
 ## Testing
 This project utilizes a pure Shibboleth IdP v3 Docker image along with two 389-ds LDAP images for testing. There is also an Shibboleth SP-based image to simulate the whole SAML process end-to-end.
 
