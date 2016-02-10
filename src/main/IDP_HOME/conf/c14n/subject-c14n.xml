@@ -35,14 +35,15 @@
         This is an alternative that handles Subjects containing an X500Principal object and
         allows extraction from the DN.
         -->
-
+        <ref bean="c14n/x500" />
+        <!--
+        This is will append the login realm/role to the subject so that we can enable/disable Attribute Resolver Data Connectors and attributes by the associated realm.
+        -->
         <bean id="c14n/Splitauthn" parent="shibboleth.PostLoginSubjectCanonicalizationFlow" >
             <property name="activationCondition">
                 <bean class="net.unicon.idp.authn.impl.SplitauthnSubjectCanonicalization.ActivationCondition" />
             </property>
         </bean>
-
-        <ref bean="c14n/x500" />
 
         <!--
         This is the standard post-login step that returns a username derived from the login process. If you
@@ -50,12 +51,7 @@
         be required such as that above, but you can configure simple transforms in simple-subject-c14n-config.xml
         -->
         <ref bean="c14n/simple" />
-
-        <!--
-        This is will append the login realm/role to the subject so that we can enable/disable Attribute Resolver Data Connectors
-        and attributes by the associated realm.
-        -->
-
+        
     </util:list>
     
     <!--

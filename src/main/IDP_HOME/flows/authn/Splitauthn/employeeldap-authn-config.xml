@@ -19,7 +19,7 @@
 
     <alias name="%{idp.authn.EmployeeLDAP.authenticator:employeeAnonSearchAuthenticator}" alias="shibboleth.authn.EmployeeLDAP.authenticator" />
     <bean id="shibboleth.authn.EmployeeLDAP.returnAttributes" parent="shibboleth.CommaDelimStringArray">
-        <constructor-arg type="java.lang.String" value="%{idp.authn.EmployeeLDAP.returnAttributes}" />
+        <constructor-arg type="java.lang.String" value="%{idp.authn.EmployeeLDAP.returnAttributes:1.1}" />
     </bean>
 
     <!--
@@ -38,12 +38,12 @@
     <bean id="employeeJvmTrust" class="org.ldaptive.ssl.SslConfig" />
     <bean id="employeeCertificateTrust" class="org.ldaptive.ssl.SslConfig">
         <property name="credentialConfig">
-            <bean parent="shibboleth.X509ResourceCredentialConfig" p:trustCertificates="%{idp.authn.EmployeeLDAP.trustCertificates}" />
+            <bean parent="shibboleth.X509ResourceCredentialConfig" p:trustCertificates="%{idp.authn.EmployeeLDAP.trustCertificates:undefined}" />
         </property>
     </bean>
     <bean id="employeeKeyStoreTrust" class="org.ldaptive.ssl.SslConfig">
         <property name="credentialConfig">
-            <bean parent="shibboleth.KeystoreResourceCredentialConfig" p:trustStore="%{idp.authn.EmployeeLDAP.trustStore}" />
+            <bean parent="shibboleth.KeystoreResourceCredentialConfig" p:truststore="%{idp.authn.EmployeeLDAP.trustStore:undefined}" /> 
         </property>
     </bean>
 
@@ -56,7 +56,7 @@
     <bean id="employeeBindConnectionConfig" parent="employeeConnectionConfig" />
 
     <!-- Format DN resolution -->
-    <bean id="employeeFormatDnResolver" class="org.ldaptive.auth.FormatDnResolver" p:format="%{idp.authn.EmployeeLDAP.dnFormat}" />
+    <bean id="employeeFormatDnResolver" class="org.ldaptive.auth.FormatDnResolver" p:format="%{idp.authn.EmployeeLDAP.dnFormat:undefined}" />
 
     <!-- Pool Configuration -->
     <bean id="employeeConnectionPool" class="org.ldaptive.pool.BlockingConnectionPool" abstract="true"
@@ -77,12 +77,14 @@
     <bean id="employeeSearchValidator" class="org.ldaptive.pool.SearchValidator" />
 
     <!-- Anonymous Search Configuration -->
-    <bean name="employeeAnonSearchAuthenticator" class="org.ldaptive.auth.Authenticator">
+    <bean name="employeeAnonSearchAuthenticator" class="org.ldaptive.auth.Authenticator" p:resolveEntryOnFailure="%{idp.authn.EmployeeLDAP.resolveEntryOnFailure:false}">
         <constructor-arg index="0" ref="employeeAnonSearchDnResolver" />
         <constructor-arg index="1" ref="employeeAuthHandler" />
     </bean>
-    <bean id="employeeAnonSearchDnResolver" class="org.ldaptive.auth.PooledSearchDnResolver" p:baseDn="%{idp.authn.EmployeeLDAP.baseDN}"
-        p:subtreeSearch="%{idp.authn.EmployeeLDAP.subtreeSearch:false}" p:userFilter="%{idp.authn.EmployeeLDAP.userFilter}"
+    <bean id="employeeAnonSearchDnResolver" class="org.ldaptive.auth.PooledSearchDnResolver"
+        p:baseDn="#{'%{idp.authn.EmployeeLDAP.baseDN:undefined}'.trim()}"
+        p:subtreeSearch="%{idp.authn.EmployeeLDAP.subtreeSearch:false}"
+        p:userFilter="#{'%{idp.authn.EmployeeLDAP.userFilter:undefined}'.trim()}"
         p:connectionFactory-ref="employeeAnonSearchPooledConnectionFactory" />
     <bean id="employeeAnonSearchPooledConnectionFactory" class="org.ldaptive.pool.PooledConnectionFactory"
         p:connectionPool-ref="employeeAnonSearchConnectionPool" />
@@ -92,12 +94,14 @@
     <bean id="employeeAnonSearchConnectionConfig" parent="employeeConnectionConfig" />
 
     <!-- Bind Search Configuration -->
-    <bean name="employeeBindSearchAuthenticator" class="org.ldaptive.auth.Authenticator">
+    <bean name="employeeBindSearchAuthenticator" class="org.ldaptive.auth.Authenticator"  p:resolveEntryOnFailure="%{idp.authn.EmployeeLDAP.resolveEntryOnFailure:false}">
         <constructor-arg index="0" ref="employeeBindSearchDnResolver" />
         <constructor-arg index="1" ref="employeeAuthHandler" />
     </bean>
-    <bean id="employeeBindSearchDnResolver" class="org.ldaptive.auth.PooledSearchDnResolver" p:baseDn="%{idp.authn.EmployeeLDAP.baseDN}"
-        p:subtreeSearch="%{idp.authn.EmployeeLDAP.subtreeSearch:false}" p:userFilter="%{idp.authn.EmployeeLDAP.userFilter}"
+    <bean id="employeeBindSearchDnResolver" class="org.ldaptive.auth.PooledSearchDnResolver" 
+        p:baseDn="#{'%{idp.authn.EmployeeLDAP.baseDN:undefined}'.trim()}"
+        p:subtreeSearch="%{idp.authn.EmployeeLDAP.subtreeSearch:false}"
+        p:userFilter="#{'%{idp.authn.EmployeeLDAP.userFilter:undefined}'.trim()}"
         p:connectionFactory-ref="employeeBindSearchPooledConnectionFactory" />
     <bean id="employeeBindSearchPooledConnectionFactory" class="org.ldaptive.pool.PooledConnectionFactory"
         p:connectionPool-ref="employeeBindSearchConnectionPool" />
@@ -105,16 +109,17 @@
         p:connectionFactory-ref="employeeBindSearchConnectionFactory" p:name="employeeSearch-pool" />
     <bean id="employeeBindSearchConnectionFactory" class="org.ldaptive.DefaultConnectionFactory" p:connectionConfig-ref="employeeBindSearchConnectionConfig" />
     <bean id="employeeBindSearchConnectionConfig" parent="employeeConnectionConfig" p:connectionInitializer-ref="employeeBindConnectionInitializer" />
-    <bean id="employeeBindConnectionInitializer" class="org.ldaptive.BindConnectionInitializer" p:bindDn="%{idp.authn.EmployeeLDAP.bindDN}">
+    <bean id="employeeBindConnectionInitializer" class="org.ldaptive.BindConnectionInitializer" 
+           p:bindDn="#{'%{idp.authn.EmployeeLDAP.bindDN:undefined}'.trim()}">
         <property name="bindCredential">
             <bean class="org.ldaptive.Credential">
-                <constructor-arg value="%{idp.authn.EmployeeLDAP.bindDNCredential}" />
+                <constructor-arg value="%{idp.authn.EmployeeLDAP.bindDNCredential:undefined}" />
             </bean>
         </property>
     </bean>
 
     <!-- Direct Search Configuration -->
-    <bean name="employeeDirectAuthenticator" class="org.ldaptive.auth.Authenticator">
+    <bean name="employeeDirectAuthenticator" class="org.ldaptive.auth.Authenticator" p:resolveEntryOnFailure="%{idp.authn.EmployeeLDAP.resolveEntryOnFailure:false}">
         <constructor-arg index="0" ref="employeeFormatDnResolver" />
         <constructor-arg index="1" ref="employeeAuthHandler" />
     </bean>
@@ -124,7 +129,8 @@
         class="org.ldaptive.control.PasswordPolicyControl" /> add p:authenticationControls-ref="authenticationControl" to the authHandler -->
 
     <!-- Active Directory Configuration -->
-    <bean id="employeeAdAuthenticator" class="org.ldaptive.auth.Authenticator" p:authenticationResponseHandlers-ref="employeeAuthenticationResponseHandler">
+    <bean id="employeeAdAuthenticator" class="org.ldaptive.auth.Authenticator" p:authenticationResponseHandlers-ref="employeeAuthenticationResponseHandler"
+        p:resolveEntryOnFailure="%{idp.authn.EmployeeLDAP.resolveEntryOnFailure:false}">
         <constructor-arg index="0" ref="employeeFormatDnResolver" />
         <constructor-arg index="1" ref="employeeAuthHandler" />
     </bean>

@@ -19,7 +19,7 @@
 
     <alias name="%{idp.authn.StudentLDAP.authenticator:studentAnonSearchAuthenticator}" alias="shibboleth.authn.StudentLDAP.authenticator" />
     <bean id="shibboleth.authn.StudentLDAP.returnAttributes" parent="shibboleth.CommaDelimStringArray">
-        <constructor-arg type="java.lang.String" value="%{idp.authn.StudentLDAP.returnAttributes}" />
+        <constructor-arg type="java.lang.String" value="%{idp.authn.StudentLDAP.returnAttributes:1.1}" />
     </bean>
 
     <!--
@@ -38,12 +38,12 @@
     <bean id="studentJvmTrust" class="org.ldaptive.ssl.SslConfig" />
     <bean id="studentCertificateTrust" class="org.ldaptive.ssl.SslConfig">
         <property name="credentialConfig">
-            <bean parent="shibboleth.X509ResourceCredentialConfig" p:trustCertificates="%{idp.authn.StudentLDAP.trustCertificates}" />
+            <bean parent="shibboleth.X509ResourceCredentialConfig" p:trustCertificates="%{idp.authn.StudentLDAP.trustCertificates:undefined}" />
         </property>
     </bean>
     <bean id="studentKeyStoreTrust" class="org.ldaptive.ssl.SslConfig">
         <property name="credentialConfig">
-            <bean parent="shibboleth.KeystoreResourceCredentialConfig" p:trustStore="%{idp.authn.StudentLDAP.trustStore}" />
+            <bean parent="shibboleth.KeystoreResourceCredentialConfig" p:truststore="%{idp.authn.StudentLDAP.trustStore:undefined}" />
         </property>
     </bean>
 
@@ -56,7 +56,7 @@
     <bean id="studentBindConnectionConfig" parent="studentConnectionConfig" />
 
     <!-- Format DN resolution -->
-    <bean id="studentFormatDnResolver" class="org.ldaptive.auth.FormatDnResolver" p:format="%{idp.authn.StudentLDAP.dnFormat}" />
+    <bean id="studentFormatDnResolver" class="org.ldaptive.auth.FormatDnResolver" p:format="%{idp.authn.StudentLDAP.dnFormat:undefined}" />
 
     <!-- Pool Configuration -->
     <bean id="studentConnectionPool" class="org.ldaptive.pool.BlockingConnectionPool" abstract="true"
@@ -77,12 +77,14 @@
     <bean id="studentSearchValidator" class="org.ldaptive.pool.SearchValidator" />
 
     <!-- Anonymous Search Configuration -->
-    <bean name="studentAnonSearchAuthenticator" class="org.ldaptive.auth.Authenticator">
+    <bean name="studentAnonSearchAuthenticator" class="org.ldaptive.auth.Authenticator"  p:resolveEntryOnFailure="%{idp.authn.StudentLDAP.resolveEntryOnFailure:false}">
         <constructor-arg index="0" ref="studentAnonSearchDnResolver" />
         <constructor-arg index="1" ref="studentAuthHandler" />
     </bean>
-    <bean id="studentAnonSearchDnResolver" class="org.ldaptive.auth.PooledSearchDnResolver" p:baseDn="%{idp.authn.StudentLDAP.baseDN}"
-        p:subtreeSearch="%{idp.authn.StudentLDAP.subtreeSearch:false}" p:userFilter="%{idp.authn.StudentLDAP.userFilter}"
+    <bean id="studentAnonSearchDnResolver" class="org.ldaptive.auth.PooledSearchDnResolver" 
+        p:baseDn="#{'%{idp.authn.StudentLDAP.baseDN:undefined}'.trim()}"
+        p:subtreeSearch="%{idp.authn.StudentLDAP.subtreeSearch:false}"
+        p:userFilter="#{'%{idp.authn.StudentLDAP.userFilter:undefined}'.trim()}"
         p:connectionFactory-ref="studentAnonSearchPooledConnectionFactory" />
     <bean id="studentAnonSearchPooledConnectionFactory" class="org.ldaptive.pool.PooledConnectionFactory"
         p:connectionPool-ref="studentAnonSearchConnectionPool" />
@@ -92,12 +94,14 @@
     <bean id="studentAnonSearchConnectionConfig" parent="studentConnectionConfig" />
 
     <!-- Bind Search Configuration -->
-    <bean name="studentBindSearchAuthenticator" class="org.ldaptive.auth.Authenticator">
+    <bean name="studentBindSearchAuthenticator" class="org.ldaptive.auth.Authenticator" p:resolveEntryOnFailure="%{idp.authn.StudentLDAP.resolveEntryOnFailure:false}">
         <constructor-arg index="0" ref="studentBindSearchDnResolver" />
         <constructor-arg index="1" ref="studentAuthHandler" />
     </bean>
-    <bean id="studentBindSearchDnResolver" class="org.ldaptive.auth.PooledSearchDnResolver" p:baseDn="%{idp.authn.StudentLDAP.baseDN}"
-        p:subtreeSearch="%{idp.authn.StudentLDAP.subtreeSearch:false}" p:userFilter="%{idp.authn.StudentLDAP.userFilter}"
+    <bean id="studentBindSearchDnResolver" class="org.ldaptive.auth.PooledSearchDnResolver"
+        p:baseDn="#{'%{idp.authn.StudentLDAP.baseDN:undefined}'.trim()}"
+        p:subtreeSearch="%{idp.authn.StudentLDAP.subtreeSearch:false}"
+        p:userFilter="#{'%{idp.authn.StudentLDAP.userFilter:undefined}'.trim()}"
         p:connectionFactory-ref="studentBindSearchPooledConnectionFactory" />
     <bean id="studentBindSearchPooledConnectionFactory" class="org.ldaptive.pool.PooledConnectionFactory"
         p:connectionPool-ref="studentBindSearchConnectionPool" />
@@ -105,16 +109,17 @@
         p:connectionFactory-ref="studentBindSearchConnectionFactory" p:name="studentSearch-pool" />
     <bean id="studentBindSearchConnectionFactory" class="org.ldaptive.DefaultConnectionFactory" p:connectionConfig-ref="studentBindSearchConnectionConfig" />
     <bean id="studentBindSearchConnectionConfig" parent="studentConnectionConfig" p:connectionInitializer-ref="studentBindConnectionInitializer" />
-    <bean id="studentBindConnectionInitializer" class="org.ldaptive.BindConnectionInitializer" p:bindDn="%{idp.authn.StudentLDAP.bindDN}">
+    <bean id="studentBindConnectionInitializer" class="org.ldaptive.BindConnectionInitializer" 
+           p:bindDn="#{'%{idp.authn.StudentLDAP.bindDN:undefined}'.trim()}">
         <property name="bindCredential">
             <bean class="org.ldaptive.Credential">
-                <constructor-arg value="%{idp.authn.StudentLDAP.bindDNCredential}" />
+                <constructor-arg value="%{idp.authn.StudentLDAP.bindDNCredential:undefined}" />
             </bean>
         </property>
     </bean>
 
     <!-- Direct Search Configuration -->
-    <bean name="studentDirectAuthenticator" class="org.ldaptive.auth.Authenticator">
+    <bean name="studentDirectAuthenticator" class="org.ldaptive.auth.Authenticator" p:resolveEntryOnFailure="%{idp.authn.LDAP.resolveEntryOnFailure:false}">
         <constructor-arg index="0" ref="studentFormatDnResolver" />
         <constructor-arg index="1" ref="studentAuthHandler" />
     </bean>
@@ -124,7 +129,8 @@
         class="org.ldaptive.control.PasswordPolicyControl" /> add p:authenticationControls-ref="authenticationControl" to the authHandler -->
 
     <!-- Active Directory Configuration -->
-    <bean id="studentAdAuthenticator" class="org.ldaptive.auth.Authenticator" p:authenticationResponseHandlers-ref="studentAuthenticationResponseHandler">
+    <bean id="studentAdAuthenticator" class="org.ldaptive.auth.Authenticator" p:authenticationResponseHandlers-ref="studentAuthenticationResponseHandler"
+        p:resolveEntryOnFailure="%{idp.authn.StudentLDAP.resolveEntryOnFailure:false}">
         <constructor-arg index="0" ref="studentFormatDnResolver" />
         <constructor-arg index="1" ref="studentAuthHandler" />
     </bean>
