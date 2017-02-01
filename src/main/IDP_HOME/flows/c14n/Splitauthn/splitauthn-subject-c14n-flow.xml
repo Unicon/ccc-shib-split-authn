@@ -3,6 +3,11 @@
       xsi:schemaLocation="http://www.springframework.org/schema/webflow http://www.springframework.org/schema/webflow/spring-webflow.xsd"
       parent="c14n.abstract">
 
+    <!--
+    Unicon Implementation Note:
+    This file is the clone of system/flows/c14n/simple-subject-c14n-flows.xml
+    -->
+
     <!-- This is a one-step subflow that does Subject Canonicalization using the simplest built-in action. -->
     
     <action-state id="SplitauthnSubjectCanonicalization">

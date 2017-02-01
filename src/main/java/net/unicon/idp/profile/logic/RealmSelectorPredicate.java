@@ -6,7 +6,7 @@ import org.opensaml.profile.context.ProfileRequestContext;
 /**
  * Created by jgasper on 11/3/15.
  */
-public class RealmSelctorPredicate implements com.google.common.base.Predicate<org.opensaml.profile.context.ProfileRequestContext> {
+public class RealmSelectorPredicate implements com.google.common.base.Predicate<org.opensaml.profile.context.ProfileRequestContext> {
     /**
      *
      */
@@ -16,7 +16,7 @@ public class RealmSelctorPredicate implements com.google.common.base.Predicate<o
      *
      * @param realm
      */
-    public RealmSelctorPredicate(final String realm) {
+    public RealmSelectorPredicate(final String realm) {
         this.realm = realm.trim();
     }
 

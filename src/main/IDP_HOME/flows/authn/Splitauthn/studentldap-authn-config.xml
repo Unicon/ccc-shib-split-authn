@@ -12,7 +12,7 @@
 
     <!--
     Unicon Implementation Note:
-    This file is the clone of conf/authn's ldap-authn-config.xml. It has been modified to include a hard coded
+    This file is the clone of conf/authn/ldap-authn-config.xml. It has been modified to include a hard coded
     literal "Student" to each ldap property reference, or "student" to each bean id or ref. This is to distinguish
     beans from the "student" equivalent file.
     -->
@@ -30,7 +30,8 @@
     <bean id="studentConnectionConfig" class="org.ldaptive.ConnectionConfig" abstract="true" p:ldapUrl="%{idp.authn.StudentLDAP.ldapURL}"
         p:useStartTLS="%{idp.authn.StudentLDAP.useStartTLS:true}"
         p:useSSL="%{idp.authn.StudentLDAP.useSSL:false}"
-        p:connectTimeout="%{idp.authn.StudentLDAP.connectTimeout:3000}"
+        p:connectTimeoutDuration="%{idp.authn.StudentLDAP.connectTimeout:PT3S}"
+        p:responseTimeoutDuration="%{idp.authn.StudentLDAP.responseTimeout:PT3S}"
         p:sslConfig-ref="studentSslConfig" />
 
     <alias name="%{idp.authn.StudentLDAP.sslConfig:studentCertificateTrust}" alias="studentSslConfig" />
@@ -60,7 +61,7 @@
 
     <!-- Pool Configuration -->
     <bean id="studentConnectionPool" class="org.ldaptive.pool.BlockingConnectionPool" abstract="true"
-        p:blockWaitTime="%{idp.pool.StudentLDAP.blockWaitTime:3000}"
+        p:blockWaitTimeDuration="%{idp.pool.StudentLDAP.blockWaitTime:PT3S}"
         p:poolConfig-ref="studentPoolConfig"
         p:pruneStrategy-ref="studentPruneStrategy"
         p:validator-ref="studentSearchValidator"
@@ -70,10 +71,10 @@
         p:maxPoolSize="%{idp.pool.StudentLDAP.maxSize:10}"
         p:validateOnCheckOut="%{idp.pool.StudentLDAP.validateOnCheckout:false}"
         p:validatePeriodically="%{idp.pool.StudentLDAP.validatePeriodically:true}"
-        p:validatePeriod="%{idp.pool.StudentLDAP.validatePeriod:300}" />
+        p:validatePeriodDuration="%{idp.pool.StudentLDAP.validatePeriod:PT5M}" />
     <bean id="studentPruneStrategy" class="org.ldaptive.pool.IdlePruneStrategy"
-        p:prunePeriod="%{idp.pool.StudentLDAP.prunePeriod:300}"
-        p:idleTime="%{idp.pool.StudentLDAP.idleTime:600}" />
+        p:prunePeriodDuration="%{idp.pool.StudentLDAP.prunePeriod:PT5M}"
+        p:idleTimeDuration="%{idp.pool.StudentLDAP.idleTime:PT10M}" />
     <bean id="studentSearchValidator" class="org.ldaptive.pool.SearchValidator" />
 
     <!-- Anonymous Search Configuration -->
@@ -81,11 +82,13 @@
         <constructor-arg index="0" ref="studentAnonSearchDnResolver" />
         <constructor-arg index="1" ref="studentAuthHandler" />
     </bean>
-    <bean id="studentAnonSearchDnResolver" class="org.ldaptive.auth.PooledSearchDnResolver" 
+    <bean id="studentAnonSearchDnResolver" class="net.shibboleth.idp.authn.PooledTemplateSearchDnResolver" 
         p:baseDn="#{'%{idp.authn.StudentLDAP.baseDN:undefined}'.trim()}"
         p:subtreeSearch="%{idp.authn.StudentLDAP.subtreeSearch:false}"
-        p:userFilter="#{'%{idp.authn.StudentLDAP.userFilter:undefined}'.trim()}"
-        p:connectionFactory-ref="studentAnonSearchPooledConnectionFactory" />
+        p:connectionFactory-ref="studentAnonSearchPooledConnectionFactory" >
+        <constructor-arg index="0" ref="shibboleth.VelocityEngine" />
+        <constructor-arg index="1" value="#{'%{idp.authn.StudentLDAP.userFilter:undefined}'.trim()}" />
+    </bean>
     <bean id="studentAnonSearchPooledConnectionFactory" class="org.ldaptive.pool.PooledConnectionFactory"
         p:connectionPool-ref="studentAnonSearchConnectionPool" />
     <bean id="studentAnonSearchConnectionPool" class="org.ldaptive.pool.BlockingConnectionPool" parent="studentConnectionPool"
@@ -98,11 +101,13 @@
         <constructor-arg index="0" ref="studentBindSearchDnResolver" />
         <constructor-arg index="1" ref="studentAuthHandler" />
     </bean>
-    <bean id="studentBindSearchDnResolver" class="org.ldaptive.auth.PooledSearchDnResolver"
+    <bean id="studentBindSearchDnResolver" class="net.shibboleth.idp.authn.PooledTemplateSearchDnResolver"
         p:baseDn="#{'%{idp.authn.StudentLDAP.baseDN:undefined}'.trim()}"
         p:subtreeSearch="%{idp.authn.StudentLDAP.subtreeSearch:false}"
-        p:userFilter="#{'%{idp.authn.StudentLDAP.userFilter:undefined}'.trim()}"
-        p:connectionFactory-ref="studentBindSearchPooledConnectionFactory" />
+        p:connectionFactory-ref="studentBindSearchPooledConnectionFactory" >
+        <constructor-arg index="0" ref="shibboleth.VelocityEngine" />
+        <constructor-arg index="1" value="#{'%{idp.authn.StudentLDAP.userFilter:undefined}'.trim()}" />
+    </bean>
     <bean id="studentBindSearchPooledConnectionFactory" class="org.ldaptive.pool.PooledConnectionFactory"
         p:connectionPool-ref="studentBindSearchConnectionPool" />
     <bean id="studentBindSearchConnectionPool" class="org.ldaptive.pool.BlockingConnectionPool" parent="studentConnectionPool"

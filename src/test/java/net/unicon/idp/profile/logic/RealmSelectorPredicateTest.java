@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 /**
  * Created by jgasper on 11/24/15.
  */
-public class RealmSelctorPredicateTest {
+public class RealmSelectorPredicateTest {
 
     @Test
     public void testApplyGood() throws Exception {
@@ -20,8 +20,8 @@ public class RealmSelctorPredicateTest {
         ProfileRequestContext profileRequestContext = new ProfileRequestContext();
         profileRequestContext.addSubcontext(subjectContext);
 
-        RealmSelctorPredicate realmSelctorPredicate = new RealmSelctorPredicate("good");
-        assertTrue(realmSelctorPredicate.apply(profileRequestContext));
+        RealmSelectorPredicate realmSelectorPredicate = new RealmSelectorPredicate("good");
+        assertTrue(realmSelectorPredicate.apply(profileRequestContext));
     }
 
     @Test
@@ -32,16 +32,16 @@ public class RealmSelctorPredicateTest {
         ProfileRequestContext profileRequestContext = new ProfileRequestContext();
         profileRequestContext.addSubcontext(subjectContext);
 
-        RealmSelctorPredicate realmSelctorPredicate = new RealmSelctorPredicate("good");
-        assertFalse(realmSelctorPredicate.apply(profileRequestContext));
+        RealmSelectorPredicate realmSelectorPredicate = new RealmSelectorPredicate("good");
+        assertFalse(realmSelectorPredicate.apply(profileRequestContext));
     }
 
     @Test
     public void testApplyNull() throws Exception {
         ProfileRequestContext profileRequestContext = new ProfileRequestContext();
 
-        RealmSelctorPredicate realmSelctorPredicate = new RealmSelctorPredicate("good");
-        assertFalse(realmSelctorPredicate.apply(profileRequestContext));
+        RealmSelectorPredicate realmSelectorPredicate = new RealmSelectorPredicate("good");
+        assertFalse(realmSelectorPredicate.apply(profileRequestContext));
     }
 
 }

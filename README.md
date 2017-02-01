@@ -29,14 +29,14 @@ Many of the files have matching equivalents of the default installation, so it m
 * The `studentLdap.properties` and `employeeLdap.properties` are mirror images of the `ldap.properties` file. All of the properties work as expected except the search filter. `(uid=$requestContext.principalName.replace("@student", ""))` (or `(uid=$requestContext.principalName.replace("@student", ""))`) have an additonal call that strips the realm identifier used during attribute lookup.
 * The `attribute-resolver.xml` is generally the same, but one should note that each ldap-based attribute definition has two resolver dependencies, one to each ldap. An activation condition on each DataConnector determines which source is used to populate the attribute definition.
 * The `general-authn.xml` file has an added flow definition that defines the flow contained in this distribution.
-* In the `service.xml`, the `shibboleth.AttributeResolverResources` has an extra definition that defines "extra" beans used by the custom flow.
+* In the `global.xml`, the `custom.AttributeResolverResources` has an extra definition that defines "custom" beans used by the Split-authn flow.
 
-The label of the "role/realm" can be changed by adding a property `idp.login.realm=<label>` to the `messages/authn-messages.properties` file.
+The label of the "role/realm" can be changed by adding a property `idp.login.realm=<label>` to the `messages/messages.properties` file.
 
 ## Testing
 This project utilizes a pure Shibboleth IdP v3 Docker image along with two 389-ds LDAP images for testing. There is also an Shibboleth SP-based image to simulate the whole SAML process end-to-end.
 
-A `hosts` file entry should be setup to point `idp.ccc.local` to the IP address of the docker host (`docker-machine ip default`).
+A `hosts` file entry should be setup to point `idp.ccc.local` to the IP address of the docker host.
 
 Assuming that Docker has been setup properly, and your Docker env variables are correct, as well, the containers can be started with:
 
@@ -59,3 +59,16 @@ To add in viewing the logs of Jetty, the IdP, the LDAP servers, and the SP, one 
 ```
 
 Ctrl+C will stop the logging process, but will leave the containers running. Use './gradlew clean' to terminate and remove those instances.
+
+## Release notes
+
+- 1.1.0 
+  - Updated for IdP version 3.3.0. 
+  - `extra-beans.xml` removed and its contents placed in the standard `global.xml`
+  - With the change to use `global.xml`, `services.xml` mods are no longer needed and the file has been removed from this solution.
+  - Better documented in each file where its origin in the baseline IdP codebase
+- 1.0.2
+  - Updated to IdP version 3.2.1
+  - Fixing location of jar in the build
+- 1.0.1 - Fixing a problem in the `login.vm`
+- 1.0.0 - Initial release

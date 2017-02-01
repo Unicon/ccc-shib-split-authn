@@ -12,10 +12,10 @@ repositories {
 
 
 dependencies {
-    compile 'org.opensaml:opensaml-profile-api:3.2.0'
-    compile 'net.shibboleth.idp:idp-authn-api:3.2.0'
-    compile 'net.shibboleth.idp:idp-profile-api:3.2.0'
-    compile 'org.springframework.webflow:spring-webflow:2.4.1.RELEASE'
+    compile 'org.opensaml:opensaml-profile-api:3.3.0'
+    compile 'net.shibboleth.idp:idp-authn-api:3.3.0'
+    compile 'net.shibboleth.idp:idp-profile-api:3.3.0'
+    compile 'org.springframework.webflow:spring-webflow:2.4.4.RELEASE'
 
 
     // Declare the dependency for your favourite test framework you want to use in your tests.
@@ -24,9 +24,9 @@ dependencies {
     // 'test.useTestNG()' to your build script.
     testCompile 'org.testng:testng:6.8.1'
     testCompile 'org.mockito:mockito-core:1.10.8'
-    testCompile 'net.shibboleth.idp:idp-profile-api:3.2.0:tests'
+    testCompile 'net.shibboleth.idp:idp-profile-api:3.3.0:tests'
     testCompile 'javax.servlet:javax.servlet-api:3.0.1'
-    testCompile 'org.springframework:spring-test:4.2.3.RELEASE'
+    testCompile 'org.springframework:spring-test:4.3.2.RELEASE'
 }
 
 distributions {    
@@ -38,7 +38,7 @@ distributions {
     }
 }
 
-version = '1.0.2'
+version = '1.1.0'
 
 test.useTestNG()
 jar.dependsOn test

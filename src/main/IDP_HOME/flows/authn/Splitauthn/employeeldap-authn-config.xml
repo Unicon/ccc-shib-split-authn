@@ -12,7 +12,7 @@
 
     <!--
     Unicon Implementation Note:
-    This file is the clone of conf/authn's ldap-authn-config.xml. It has been modified to include a hard coded
+    This file is the clone of conf/authn/ldap-authn-config.xml. It has been modified to include a hard coded
     literal "Employee" to each ldap property reference, or "employee" to each bean id or ref. This is to distinguish
     beans from the "student" equivalent file.
     -->
@@ -30,7 +30,8 @@
     <bean id="employeeConnectionConfig" class="org.ldaptive.ConnectionConfig" abstract="true" p:ldapUrl="%{idp.authn.EmployeeLDAP.ldapURL}"
         p:useStartTLS="%{idp.authn.EmployeeLDAP.useStartTLS:true}"
         p:useSSL="%{idp.authn.EmployeeLDAP.useSSL:false}"
-        p:connectTimeout="%{idp.authn.EmployeeLDAP.connectTimeout:3000}"
+        p:connectTimeoutDuration="%{idp.authn.EmployeeLDAP.connectTimeout:PT3S}"
+        p:responseTimeoutDuration="%{idp.authn.EmployeeLDAP.responseTimeout:PT3S}"
         p:sslConfig-ref="employeeSslConfig" />
 
     <alias name="%{idp.authn.EmployeeLDAP.sslConfig:employeeCertificateTrust}" alias="employeeSslConfig" />
@@ -60,7 +61,7 @@
 
     <!-- Pool Configuration -->
     <bean id="employeeConnectionPool" class="org.ldaptive.pool.BlockingConnectionPool" abstract="true"
-        p:blockWaitTime="%{idp.pool.EmployeeLDAP.blockWaitTime:3000}"
+        p:blockWaitTimeDuration="%{idp.pool.EmployeeLDAP.blockWaitTime:PT3S}"
         p:poolConfig-ref="employeePoolConfig"
         p:pruneStrategy-ref="employeePruneStrategy"
         p:validator-ref="employeeSearchValidator"
@@ -70,10 +71,10 @@
         p:maxPoolSize="%{idp.pool.EmployeeLDAP.maxSize:10}"
         p:validateOnCheckOut="%{idp.pool.EmployeeLDAP.validateOnCheckout:false}"
         p:validatePeriodically="%{idp.pool.EmployeeLDAP.validatePeriodically:true}"
-        p:validatePeriod="%{idp.pool.EmployeeLDAP.validatePeriod:300}" />
+        p:validatePeriodDuration="%{idp.pool.EmployeeLDAP.validatePeriod:PT5M}" />
     <bean id="employeePruneStrategy" class="org.ldaptive.pool.IdlePruneStrategy"
-        p:prunePeriod="%{idp.pool.EmployeeLDAP.prunePeriod:300}"
-        p:idleTime="%{idp.pool.EmployeeLDAP.idleTime:600}" />
+        p:prunePeriodDuration="%{idp.pool.EmployeeLDAP.prunePeriod:PT5M}"
+        p:idleTimeDuration="%{idp.pool.EmployeeLDAP.idleTime:PT10M}" />
     <bean id="employeeSearchValidator" class="org.ldaptive.pool.SearchValidator" />
 
     <!-- Anonymous Search Configuration -->
@@ -81,11 +82,13 @@
         <constructor-arg index="0" ref="employeeAnonSearchDnResolver" />
         <constructor-arg index="1" ref="employeeAuthHandler" />
     </bean>
-    <bean id="employeeAnonSearchDnResolver" class="org.ldaptive.auth.PooledSearchDnResolver"
+    <bean id="employeeAnonSearchDnResolver" class="net.shibboleth.idp.authn.PooledTemplateSearchDnResolver"
         p:baseDn="#{'%{idp.authn.EmployeeLDAP.baseDN:undefined}'.trim()}"
         p:subtreeSearch="%{idp.authn.EmployeeLDAP.subtreeSearch:false}"
-        p:userFilter="#{'%{idp.authn.EmployeeLDAP.userFilter:undefined}'.trim()}"
-        p:connectionFactory-ref="employeeAnonSearchPooledConnectionFactory" />
+        p:connectionFactory-ref="employeeAnonSearchPooledConnectionFactory" >
+        <constructor-arg index="0" ref="shibboleth.VelocityEngine" />
+        <constructor-arg index="1" value="#{'%{idp.authn.EmployeeLDAP.userFilter:undefined}'.trim()}" />
+    </bean>
     <bean id="employeeAnonSearchPooledConnectionFactory" class="org.ldaptive.pool.PooledConnectionFactory"
         p:connectionPool-ref="employeeAnonSearchConnectionPool" />
     <bean id="employeeAnonSearchConnectionPool" class="org.ldaptive.pool.BlockingConnectionPool" parent="employeeConnectionPool"
@@ -98,11 +101,13 @@
         <constructor-arg index="0" ref="employeeBindSearchDnResolver" />
         <constructor-arg index="1" ref="employeeAuthHandler" />
     </bean>
-    <bean id="employeeBindSearchDnResolver" class="org.ldaptive.auth.PooledSearchDnResolver" 
+    <bean id="employeeBindSearchDnResolver" class="net.shibboleth.idp.authn.PooledTemplateSearchDnResolver" 
         p:baseDn="#{'%{idp.authn.EmployeeLDAP.baseDN:undefined}'.trim()}"
         p:subtreeSearch="%{idp.authn.EmployeeLDAP.subtreeSearch:false}"
-        p:userFilter="#{'%{idp.authn.EmployeeLDAP.userFilter:undefined}'.trim()}"
-        p:connectionFactory-ref="employeeBindSearchPooledConnectionFactory" />
+        p:connectionFactory-ref="employeeBindSearchPooledConnectionFactory" >
+        <constructor-arg index="0" ref="shibboleth.VelocityEngine" />
+        <constructor-arg index="1" value="#{'%{idp.authn.EmployeeLDAP.userFilter:undefined}'.trim()}" />
+    </bean>
     <bean id="employeeBindSearchPooledConnectionFactory" class="org.ldaptive.pool.PooledConnectionFactory"
         p:connectionPool-ref="employeeBindSearchConnectionPool" />
     <bean id="employeeBindSearchConnectionPool" class="org.ldaptive.pool.BlockingConnectionPool" parent="employeeConnectionPool"

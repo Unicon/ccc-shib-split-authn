@@ -11,13 +11,22 @@
                            
        default-init-method="initialize"
        default-destroy-method="destroy">
+    <!--
+    Unicon Implementation Note:
+    This file is the clone of system/flows/c14n/simple-subject-c14n-beans.xml.
+    -->
 
-    <!--<import resource="../../../conf/c14n/simple-subject-c14n-config.xml" />-->
 
-    <bean class="net.shibboleth.idp.profile.impl.ProfileActionBeanPostProcessor" />
+    <import resource="../../../conf/c14n/simple-subject-c14n-config.xml" />
+
     <bean class="net.shibboleth.ext.spring.config.IdentifiableBeanPostProcessor" />
+    <bean class="net.shibboleth.idp.profile.impl.ProfileActionBeanPostProcessor" />
     
     <bean id="SplitauthnSubjectCanonicalization"
-        class="net.unicon.idp.authn.impl.SplitauthnSubjectCanonicalization" scope="prototype" />
+        class="net.unicon.idp.authn.impl.SplitauthnSubjectCanonicalization" scope="prototype"
+        p:lowercase-ref="shibboleth.c14n.simple.Lowercase"
+        p:uppercase-ref="shibboleth.c14n.simple.Uppercase"
+        p:trim-ref="shibboleth.c14n.simple.Trim"
+        p:transforms-ref="shibboleth.c14n.simple.Transforms" />
     
 </beans>

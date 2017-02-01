@@ -51,7 +51,6 @@
         be required such as that above, but you can configure simple transforms in simple-subject-c14n-config.xml
         -->
         <ref bean="c14n/simple" />
-        
     </util:list>
     
     <!--
